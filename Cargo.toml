@@ -1,5 +1,5 @@
 [package]
-name = "VoxelsApplicationService"
+name = "voxels-directories-service"
 version = "0.1.0"
 edition = "2024"
 description = "DBus service providing a framework for applications in the voxels game ecosystem to identify, collaborate and share resources with eachother."
@@ -7,4 +7,5 @@ description = "DBus service providing a framework for applications in the voxels
 [dependencies]
 dbus = "0.9.7"
 dbus-crossroads = "0.5.2"
-lib-voxels-application = {git="https://github.com/Oxyn4/lib-voxels-directories"}
+lib-voxels-directories = {git="https://github.com/Oxyn4/lib-voxels-directories"}
+toml = "0.8.20"

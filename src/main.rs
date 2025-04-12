@@ -1,5 +1,5 @@
 
-use lib_voxels_application as vxapp;
+use lib_voxels_directories as vxapp;
 
 fn data() -> Result<(String,), dbus_crossroads::MethodErr> {
     use vxapp::voxels::voxels_xdg::data::DataDirectoryResolver;
@@ -68,7 +68,7 @@ fn state() -> Result<(String,), dbus_crossroads::MethodErr> {
     Ok((state_path.unwrap().into_os_string().into_string().unwrap(),))
 }
 
-
+#[lib_voxels_directories::lib_voxels_application::proc::main]
 fn main() {
     const INTERFACE_NAME: &str = "org.voxels.directories";
 
