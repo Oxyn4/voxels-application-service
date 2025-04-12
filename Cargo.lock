@@ -258,7 +258,7 @@ dependencies = [
 [[package]]
 name = "lib-voxels-application-core"
 version = "0.1.0"
-source = "git+https://github.com/Oxyn4/lib-voxels-application-core#2bb6d774fa99d2fa08fd52896237c62c6c0b5442"
+source = "git+https://github.com/Oxyn4/lib-voxels-application-core#c9cc8c2fa15dbc5ad4e84c2c1098b18400d938be"
 dependencies = [
  "mockall",
  "serde",
