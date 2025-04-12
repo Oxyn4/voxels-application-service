@@ -1,17 +1,19 @@
 
-use lib_voxels_directories as vxapp;
+use lib_voxels_directories as vxdirs;
+
+use lib_voxels_directories::lib_voxels_application as vxapps;
 
 fn data() -> Result<(String,), dbus_crossroads::MethodErr> {
-    use vxapp::voxels::voxels_xdg::data::DataDirectoryResolver;
+    use vxdirs::voxels::voxels_xdg::data::DataDirectoryResolver;
 
-    let fs = vxapp::filesystem::DefaultFsInt::default();
-    let env = vxapp::environment_variables::DefaultEnvInt::default();
+    let fs = vxdirs::filesystem::DefaultFsInt::default();
+    let env = vxdirs::environment_variables::DefaultEnvInt::default();
 
-    let base_verifier = vxapp::voxels::voxels_xdg::xdg::data::DefaultDataVerifier::new(fs);
+    let base_verifier = vxdirs::voxels::voxels_xdg::xdg::data::DefaultDataVerifier::new(fs);
 
-    let base = vxapp::voxels::voxels_xdg::xdg::data::DataDirectory::new(env, base_verifier);
+    let base = vxdirs::voxels::voxels_xdg::xdg::data::DataDirectory::new(env, base_verifier);
 
-    let resolver = vxapp::voxels::voxels_xdg::data::DataDirectory::new(base);
+    let resolver = vxdirs::voxels::voxels_xdg::data::DataDirectory::new(base);
 
     let data_path = resolver.resolve();
 
@@ -19,16 +21,16 @@ fn data() -> Result<(String,), dbus_crossroads::MethodErr> {
 }
 
 fn config() -> Result<(String,), dbus_crossroads::MethodErr> {
-    use vxapp::voxels::voxels_xdg::config::ConfigDirectoryResolver;
+    use vxdirs::voxels::voxels_xdg::config::ConfigDirectoryResolver;
 
-    let fs = vxapp::filesystem::DefaultFsInt::default();
-    let env = vxapp::environment_variables::DefaultEnvInt::default();
+    let fs = vxdirs::filesystem::DefaultFsInt::default();
+    let env = vxdirs::environment_variables::DefaultEnvInt::default();
 
-    let base_verifier = vxapp::voxels::voxels_xdg::xdg::config::DefaultConfigVerifier::new(fs);
+    let base_verifier = vxdirs::voxels::voxels_xdg::xdg::config::DefaultConfigVerifier::new(fs);
 
-    let base = vxapp::voxels::voxels_xdg::xdg::config::ConfigDirectory::new(env, base_verifier);
+    let base = vxdirs::voxels::voxels_xdg::xdg::config::ConfigDirectory::new(env, base_verifier);
 
-    let resolver = vxapp::voxels::voxels_xdg::config::ConfigDirectory::new(base);
+    let resolver = vxdirs::voxels::voxels_xdg::config::ConfigDirectory::new(base);
 
     let config_path = resolver.resolve();
 
@@ -36,39 +38,39 @@ fn config() -> Result<(String,), dbus_crossroads::MethodErr> {
 }
 
 fn runtime() -> Result<(String,), dbus_crossroads::MethodErr> {
-    use vxapp::voxels::voxels_xdg::runtime::RuntimeDirectoryResolver;
+    use vxdirs::voxels::voxels_xdg::runtime::RuntimeDirectoryResolver;
 
-    let fs = vxapp::filesystem::DefaultFsInt::default();
-    let env = vxapp::environment_variables::DefaultEnvInt::default();
+    let fs = vxdirs::filesystem::DefaultFsInt::default();
+    let env = vxdirs::environment_variables::DefaultEnvInt::default();
 
-    let base_verifier = vxapp::voxels::voxels_xdg::xdg::runtime::DefaultRuntimeVerifier::new(fs);
+    let base_verifier = vxdirs::voxels::voxels_xdg::xdg::runtime::DefaultRuntimeVerifier::new(fs);
 
-    let base = vxapp::voxels::voxels_xdg::xdg::runtime::RuntimeDirectory::new(env, base_verifier);
+    let base = vxdirs::voxels::voxels_xdg::xdg::runtime::RuntimeDirectory::new(env, base_verifier);
 
-    let resolver = vxapp::voxels::voxels_xdg::runtime::RuntimeDirectory::new(base);
+    let resolver = vxdirs::voxels::voxels_xdg::runtime::RuntimeDirectory::new(base);
 
     let runtime_path = resolver.resolve();
 
     Ok((runtime_path.unwrap().into_os_string().into_string().unwrap(),))
 }
 fn state() -> Result<(String,), dbus_crossroads::MethodErr> {
-    use vxapp::voxels::voxels_xdg::state::StateDirectoryResolver;
+    use vxdirs::voxels::voxels_xdg::state::StateDirectoryResolver;
 
-    let fs = vxapp::filesystem::DefaultFsInt::default();
-    let env = vxapp::environment_variables::DefaultEnvInt::default();
+    let fs = vxdirs::filesystem::DefaultFsInt::default();
+    let env = vxdirs::environment_variables::DefaultEnvInt::default();
 
-    let base_verifier = vxapp::voxels::voxels_xdg::xdg::state::DefaultStateVerifier::new(fs);
+    let base_verifier = vxdirs::voxels::voxels_xdg::xdg::state::DefaultStateVerifier::new(fs);
 
-    let base = vxapp::voxels::voxels_xdg::xdg::state::StateDirectory::new(env, base_verifier);
+    let base = vxdirs::voxels::voxels_xdg::xdg::state::StateDirectory::new(env, base_verifier);
 
-    let resolver = vxapp::voxels::voxels_xdg::state::StateDirectory::new(base);
+    let resolver = vxdirs::voxels::voxels_xdg::state::StateDirectory::new(base);
 
     let state_path = resolver.resolve();
 
     Ok((state_path.unwrap().into_os_string().into_string().unwrap(),))
 }
 
-#[lib_voxels_directories::lib_voxels_application::proc::main]
+#[vxapps::main]
 fn main() {
     const INTERFACE_NAME: &str = "org.voxels.directories";
 
