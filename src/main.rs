@@ -70,8 +70,10 @@ fn state() -> Result<(String,), dbus_crossroads::MethodErr> {
     Ok((state_path.unwrap().into_os_string().into_string().unwrap(),))
 }
 
-#[vxapps::main]
 fn main() {
+    let app_config: vxapps::application::Application = toml::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/voxels.toml"))).expect("Unable to parse TOML from voxels.toml config file");
+
+    println!("{:?}", app_config);
     const INTERFACE_NAME: &str = "org.voxels.directories";
 
     let dbus_connection = dbus::blocking::Connection::new_session().expect("Failed to connect to session DBus");

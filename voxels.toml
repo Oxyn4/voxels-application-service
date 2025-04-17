@@ -1,2 +1,2 @@
-rdn="org.voxels.app-service"
-id="d4441b56-1c26-4a54-b4e2-8ae4144b2acb"
+rdn = { name = "org.voxels.directories" }
+id = "5d26f907-131b-44ff-b935-11089ed19bd5"
