@@ -1,7 +1,9 @@
 mod connection;
 mod get;
+mod register;
 
-use get::configure_interface;
+use get::configure_interface as configure_get_interface;
+use register::configure_interface as configure_register_interface;
 
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
@@ -19,6 +21,8 @@ use tracing_subscriber::FmtSubscriber;
 
 use uuid::Uuid;
 use crate::connection::DBusConnection;
+
+use libsql::Connection as DbConnection; 
 
 lazy_static::lazy_static! {
     static ref APP_CONFIG: Application = toml::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/voxels.toml"))).expect("Unable to parse TOML from voxels.toml config file");
@@ -51,18 +55,27 @@ async fn main() {
     };
 
     let data_directory: Arc<RwLock<Option<PathBuf>>> = Arc::new(RwLock::new(None));
+    
+    let database: Arc<RwLock<Option<DbConnection>>> = Arc::new(RwLock::new(None));
 
-    let mut dbus_cr = dbus_crossroads::Crossroads::new();
+    let mut cr = dbus_crossroads::Crossroads::new();
 
-    dbus_cr.set_async_support(Some((dbus_connection.raw(), Box::new(|x| { tokio::spawn(x); }))));
+    cr.set_async_support(Some((dbus_connection.raw(), Box::new(|x| { tokio::spawn(x); }))));
 
-    let base_dbus_token = dbus_cr.register(*INTERFACE_NAME, |b| {
-        configure_interface(dbus_connection.clone(), data_directory.clone(), b);
+    let base_token = cr.register(*INTERFACE_NAME, |b| {
+        configure_get_interface(dbus_connection.clone(), data_directory.clone(), database.clone(), b);
+
     });
 
-    dbus_cr.insert("/get", &[base_dbus_token], ());
+    cr.insert("/get", &[base_token], ());
 
-    dbus_connection.start_receive(dbus_cr);
+    let register_token = cr.register(*INTERFACE_NAME, |b| {
+        configure_register_interface(dbus_connection.clone(), b);
+    });
+
+    cr.insert("/register", &[register_token], ());
+
+    dbus_connection.start_receive(cr);
 
     loop {}
 }

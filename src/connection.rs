@@ -1,5 +1,3 @@
-use tokio::task::spawn;
-use std::thread::JoinHandle;
 use std::sync::Arc;
 use std::time::Duration;
 use dbus::channel::MatchingReceiver;
@@ -45,6 +43,6 @@ impl DBusConnection {
     }
 
     pub fn directories_service_apps_proxy(&self) -> Proxy<'_, Arc<SyncConnection>> {
-        Proxy::new("org.voxels.directories", "/apps", Duration::from_millis(5000), self.connection.clone())
+        Proxy::new("voxels.directories", "/apps", Duration::from_millis(5000), self.connection.clone())
     }
 }
