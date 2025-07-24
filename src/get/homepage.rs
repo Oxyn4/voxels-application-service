@@ -6,7 +6,9 @@ use dbus_crossroads::{Context, IfaceBuilder};
 use tracing::info;
 use uuid::Uuid;
 use crate::connection::DBusConnection;
-use crate::{get_data_directory, INTERFACE_NAME, UUID};
+use crate::{INTERFACE_NAME, UUID};
+
+use super::get_data_directory;
 
 fn get_homepage(uuid: Uuid) -> Result<(String,), MethodErr> {
     todo!()

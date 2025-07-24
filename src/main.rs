@@ -10,7 +10,12 @@ use lib_voxels_application::application::application::{
     Application
 };
 
-use tracing::{Level, trace};
+use tracing::{
+    Level,
+    subscriber::set_global_default,
+};
+
+use tracing_subscriber::FmtSubscriber;
 
 use uuid::Uuid;
 use crate::connection::DBusConnection;
@@ -23,24 +28,12 @@ lazy_static::lazy_static! {
     static ref UUID: Uuid = APP_CONFIG.id();
 }
 
-async fn get_data_directory(connection: Arc<DBusConnection>) -> PathBuf {
-    trace!("Data directory empty attempting to call directories service");
-
-    let proxy = connection.directories_service_apps_proxy();
-
-    let as_string = UUID.to_string();
-
-    let result: (String,) = proxy.method_call("voxels.directories", "data", (as_string,)).await.unwrap();
-
-    PathBuf::from(result.0)
-}
-
 fn setup_subscriber() {
-    let subscriber = tracing_subscriber::FmtSubscriber::builder()
+    let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::TRACE)
         .finish();
 
-    tracing::subscriber::set_global_default(subscriber)
+    set_global_default(subscriber)
         .expect("Failed to set subscriber");
 }
 
