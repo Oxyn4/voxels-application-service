@@ -22,7 +22,11 @@ use tracing_subscriber::FmtSubscriber;
 use uuid::Uuid;
 use crate::connection::DBusConnection;
 
-use libsql::Connection as DbConnection; 
+use libsql::Connection as DbConnection;
+
+use lib_voxels_application::application::{
+    DBUS_STANDARD_VOXELS_APPLICATIONS_GET_PATH,
+};
 
 lazy_static::lazy_static! {
     static ref APP_CONFIG: Application = toml::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/voxels.toml"))).expect("Unable to parse TOML from voxels.toml config file");
@@ -64,10 +68,9 @@ async fn main() {
 
     let base_token = cr.register(*INTERFACE_NAME, |b| {
         configure_get_interface(dbus_connection.clone(), data_directory.clone(), database.clone(), b);
-
     });
 
-    cr.insert("/get", &[base_token], ());
+    cr.insert(DBUS_STANDARD_VOXELS_APPLICATIONS_GET_PATH, &[base_token], ());
 
     let register_token = cr.register(*INTERFACE_NAME, |b| {
         configure_register_interface(dbus_connection.clone(), b);

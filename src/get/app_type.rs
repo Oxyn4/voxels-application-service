@@ -4,10 +4,14 @@ use std::sync::{Arc, RwLock};
 use dbus::MethodErr;
 use dbus_crossroads::{Context, IfaceBuilder};
 use tracing::info;
-use libsql::{Connection, Database};
+use libsql::{Connection};
 use uuid::Uuid;
 use crate::connection::DBusConnection;
 use crate::{INTERFACE_NAME, UUID};
+
+use lib_voxels_application::application::application::{
+    DBUS_STANDARD_VOXELS_APPLICATIONS_TYPE_METHOD,
+};
 
 use super::{
     get_data_directory,
@@ -18,7 +22,7 @@ fn get_type(uuid: Uuid) -> Result<(String,), MethodErr> {
     todo!()
 }
 
-pub async fn handle_type_method_call(con: Arc<DBusConnection>, mut ctx: Context, parsed_uuid: Result<Uuid, uuid::Error>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>,) -> PhantomData<(String,)> {
+pub async fn handle_method(con: Arc<DBusConnection>, mut ctx: Context, parsed_uuid: Result<Uuid, uuid::Error>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>,) -> PhantomData<(String,)> {
     if parsed_uuid.is_err() {
         return ctx.reply(Err(MethodErr::failed("Invalid UUID")));
     }
@@ -43,12 +47,12 @@ pub async fn handle_type_method_call(con: Arc<DBusConnection>, mut ctx: Context,
     ctx.reply(Ok(result))
 }
 
-pub fn add_type_method_to_interface(con: Arc<DBusConnection>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>, b: &mut IfaceBuilder<()>) {
-    b.method_with_cr_async("type", ("uuid",), ("type",), move |ctx, _, (uuid,): (String,)|{
+pub fn add_method_to_interface(con: Arc<DBusConnection>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>, b: &mut IfaceBuilder<()>) {
+    b.method_with_cr_async(DBUS_STANDARD_VOXELS_APPLICATIONS_TYPE_METHOD, ("uuid",), ("type",), move |ctx, _, (uuid,): (String,)|{
         info!("method: 'type' called with uuid: {}", uuid);
 
         let parsed_uuid = Uuid::parse_str(uuid.as_str());
 
-        handle_type_method_call(con.clone(), ctx, parsed_uuid, data_directory.clone(), database.clone())
+        handle_method(con.clone(), ctx, parsed_uuid, data_directory.clone(), database.clone())
     });
 }

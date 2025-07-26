@@ -9,7 +9,6 @@ use crate::UUID;
 
 use std::path::Path;
 use libsql::{Builder, Connection};
-
 mod rdn;
 mod homepage;
 mod app_type;
@@ -40,11 +39,11 @@ async fn get_database(data_directory: &Path) -> Connection {
 }
 
 pub fn configure_interface(con: Arc<DBusConnection>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>, b: &mut IfaceBuilder<()>) {
-    rdn::add_rdn_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
+    rdn::add_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
 
-    homepage::add_homepage_method_to_interface(con.clone(), data_directory.clone(),database.clone(), b);
+    homepage::add_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
 
-    app_type::add_type_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
+    app_type::add_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
 
-    description::add_description_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
+    description::add_method_to_interface(con.clone(), data_directory.clone(), database.clone(), b);
 }

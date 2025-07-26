@@ -14,11 +14,15 @@ use super::{
     get_database,
 };
 
+use lib_voxels_application::application::application::{
+    DBUS_STANDARD_VOXELS_APPLICATIONS_HOMEPAGE_METHOD,
+};
+
 fn get_homepage(uuid: Uuid) -> Result<(String,), MethodErr> {
     todo!()
 }
 
-pub async fn handle_homepage_method_call(con: Arc<DBusConnection>, mut ctx: Context, parsed_uuid: Result<Uuid, uuid::Error>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>) -> PhantomData<(String,)> {
+pub async fn handle_method(con: Arc<DBusConnection>, mut ctx: Context, parsed_uuid: Result<Uuid, uuid::Error>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>) -> PhantomData<(String,)> {
     if parsed_uuid.is_err() {
         return ctx.reply(Err(MethodErr::failed("Invalid UUID")));
     }
@@ -43,12 +47,12 @@ pub async fn handle_homepage_method_call(con: Arc<DBusConnection>, mut ctx: Cont
     ctx.reply(Ok(result))
 }
 
-pub fn add_homepage_method_to_interface(con: Arc<DBusConnection>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>, b: &mut IfaceBuilder<()>) {
-    b.method_with_cr_async("homepage", ("uuid",), ("homepage",), move |ctx, _, (uuid,): (String,)| {
+pub fn add_method_to_interface(con: Arc<DBusConnection>, data_directory: Arc<RwLock<Option<PathBuf>>>, database: Arc<RwLock<Option<Connection>>>, b: &mut IfaceBuilder<()>) {
+    b.method_with_cr_async(DBUS_STANDARD_VOXELS_APPLICATIONS_HOMEPAGE_METHOD, ("uuid",), ("homepage",), move |ctx, _, (uuid,): (String,)| {
         info!("method: 'homepage' called with uuid: {}", uuid);
 
         let parsed_uuid = Uuid::parse_str(uuid.as_str());
 
-        handle_homepage_method_call(con.clone(), ctx, parsed_uuid, data_directory.clone(), database.clone())
+        handle_method(con.clone(), ctx, parsed_uuid, data_directory.clone(), database.clone())
     });
 }
